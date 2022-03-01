@@ -7,6 +7,9 @@
   <title>Document</title>
 </head>
 <body>
-  <p>{{$res}}</p>
+  
+  <p>ok</p>
+
+  <p>{{$resLogin}}</p>
 </body>
 </html>

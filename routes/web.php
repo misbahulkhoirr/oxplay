@@ -22,4 +22,4 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard', [
         'title' => 'Dashboard'
     ]);
-});
+})->name('admin-dashboard');
