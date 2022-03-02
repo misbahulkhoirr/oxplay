@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use DOMDocument;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Type\Hexadecimal;
 
 class LoginController extends Controller
 {
@@ -55,21 +54,25 @@ class LoginController extends Controller
         // echo "DATAAAAA" . $resLogin;
 
         $dataLogin = [];
-        $loginData = [];
         $json = json_decode($resLogin);
+        // dd($json);
 
-        if ($json != null) {
-            foreach ($json as $key => $val) {
-                if (is_object($json)) {
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) == 'status' && $val == true) {
                     $dataLogin[hex2bin($key)] = $val;
-                    if (is_array($val) || is_object($val)) {
-                        foreach ($val as $key1 => $val1) {
-                            $loginData[hex2bin($key)][hex2bin($key1)] = $val1;
+                } else {
+                    $dataLogin[hex2bin($key)] = $val;
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            dd(hex2bin($key2));
                         }
                     }
                 }
             }
         }
+
+
 
         // dd($dataLogin);
 
@@ -93,22 +96,34 @@ class LoginController extends Controller
         curl_close($ch);
 
         $dataUser = [];
-        $userData = [];
         $json = json_decode($resUsers);
+        // dd($json);
 
-        if ($json != null) {
-            foreach ($json as $key => $val) {
-                if (is_object($json)) {
-                    $dataUser[hex2bin($key)] = $val;
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'groups') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7573657273') {
+                                $dataUser[hex2bin($key)][hex2bin($key2)] = $val2;
+                            }
+                        }
+                    } else {
+                        $dataUser[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataUser[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        // if (is_object($dataUser['users'])){
-        //     foreach ($dataUser['users'] as $key => $val) {
-        //             $userData[hex2bin($key)] = $val;
-        //         }
-        //     }
-        // }
 
         dd($dataUser);
 
@@ -129,6 +144,42 @@ class LoginController extends Controller
         $resDeposit = curl_exec($ch);
         curl_close($ch);
         // echo $resDeposit;
+        $json = json_decode($resDeposit);
+
+        $dataDeposit = [];
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'user_group' && hex2bin($key) !== 'banks_name' && hex2bin($key) !== 'admins') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7472616e73616374696f6e73') {
+                                $dataDeposit[hex2bin($key)][hex2bin($key2)] = $val2;
+                                // $transactions[hex2bin($key2)] = $val2;
+                            } elseif ($key === '7365727669636573') {
+                                if (is_object($val2)) {
+                                    foreach ($val2 as $key3 => $val3) {
+                                        $dataDeposit[hex2bin($key)][hex2bin($key2)][hex2bin($key3)] = $val3;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $dataDeposit[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataDeposit[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // dd($dataDeposit);
 
         //withdraw
         $ch = curl_init();
@@ -145,12 +196,43 @@ class LoginController extends Controller
         ]));
         $resWithdraw = curl_exec($ch);
         curl_close($ch);
-        // echo $resWithdraw;
-        // return redirect()->route('admin-dashboard')->with([
-        //     'resLogin' => $resLogin,
-        //     'resUsers' => $resUsers,
-        //     'resDeposit' => $resDeposit,
-        //     'resWithdraw' => $resWithdraw,
-        // ]);
+
+        $json = json_decode($resWithdraw);
+        // dd($json);
+
+        $dataWithdraw = [];
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'user_group' && hex2bin($key) !== 'admins') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7472616e73616374696f6e73') {
+                                $dataWithdraw[hex2bin($key)][hex2bin($key2)] = $val2;
+                            } elseif ($key === '7365727669636573') {
+                                if (is_object($val2)) {
+                                    foreach ($val2 as $key3 => $val3) {
+                                        $dataWithdraw[hex2bin($key)][hex2bin($key2)][hex2bin($key3)] = $val3;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $dataWithdraw[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataWithdraw[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // dd($dataWithdraw);
     }
 }
