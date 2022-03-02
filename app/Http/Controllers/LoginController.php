@@ -16,7 +16,8 @@ class LoginController extends Controller
 
     function login(Request $request)
     {
-
+        // rio.troops@gmail.com
+        // bola3366
         $login = 'https://oplbo.com/auth/login';
         $cookie = '../public/cookie/' . session()->getId() . '.txt';
 
