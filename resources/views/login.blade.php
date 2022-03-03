@@ -17,9 +17,7 @@
           <div class="card shadow rounded">
             <div class="card-body">
               <h5 class="card-title text-center mb-5">Login</h5>
-              <form action="/login" method="post" accept-charset="UTF-8">
-
-                @csrf
+              <form action="/login" method="post" accept-charset="UTF-8"> @csrf
                 <div class="mb-3">
                   <label for="exampleInputEmail1" class="form-label">Email</label>
                   <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" style="width: 300px;" required autofocus>
@@ -27,7 +25,6 @@
                 <div class="mb-3">
                   <label for="exampleInputPassword1" class="form-label">Password</label>
                   <input type="password" class="form-control" id="password" name="password" style="width: 300px;" required>
-    
                 </div>
                 <button  type="submit" class="btn btn-primary">Submit</button>
               </form>
@@ -37,10 +34,10 @@
       </div>
     </div>
 
-    <script src="jquery.js"></script>
+    {{-- <script src="jquery.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-    <script>
+    {{-- <script>
       $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -50,6 +47,7 @@
 $.ajax({
     
 });
-    </script>
+    </script> --}}
+    
   </body>
 </html>

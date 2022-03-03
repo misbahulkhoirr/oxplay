@@ -16,72 +16,234 @@ class LoginController extends Controller
 
     function login(Request $request)
     {
-        // rio.troops@gmail.com
-        // bola3366
-        $login = 'https://oplbo.com/auth/login';
+        //url
+        $referlogin = 'https://oplbo.com/';
+        $apilogin = 'https://oplbo.com/api/login';
+        $apiusers = 'https://oplbo.com/api/users';
+        $apiwithdraw = 'https://oplbo.com/api/payment/payout';
+        $apideposit = 'https://oplbo.com/api/payment/payin';
         $cookie = '../public/cookie/' . session()->getId() . '.txt';
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $login);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_COOKIEJAR,  $cookie);
-        $response = curl_exec($ch);
-        // dd($response);
-
-        $dom = new DOMDocument($response);
-        $libxml_previous_state = libxml_use_internal_errors(true);
-        $dom->loadHTML($response);
-        libxml_use_internal_errors($libxml_previous_state);
-        $tags = $dom->getElementsByTagName(('meta'));
-
-        for ($i = 0; $i < $tags->length; $i++) {
-            $grab = $tags->item($i);
-            if ($grab->getAttribute('name') === 'csrf-token') {
-                $token = $grab->getAttribute('content');
-            }
-        }
-        // // dd($token);
-
-        // curl_close($ch);
 
         $data = array(
             'email' => $request->input('email'),
             'password' => $request->input('password'),
-            '_token' => $token
         );
 
-        curl_setopt($ch, CURLOPT_URL, $login);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-        curl_setopt($ch, CURLOPT_COOKIEFILE,  $cookie);
-        $res = curl_exec($ch);
+
+        //LOGIN
+        $ch = curl_init();
+        curl_setopt_array($ch, ([
+            CURLOPT_URL => $apilogin,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_REFERER => $referlogin,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_COOKIEJAR => $cookie,
+            CURLOPT_COOKIEFILE =>  $cookie
+        ]));
+        $resLogin = curl_exec($ch);
         curl_close($ch);
-        // echo $hasil;
-        dd($res);
-        // return view('admin/dashboard', compact('res'));
+
+        // $data = json_decode($resLogin);
+
+        // dd(json_decode($resLogin));
+        // echo "DATAAAAA" . $resLogin;
+
+        $dataLogin = [];
+        $json = json_decode($resLogin);
+        // dd($json);
+
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) == 'status' && $val == true) {
+                    $dataLogin[hex2bin($key)] = $val;
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            $dataLogin[hex2bin($key)][hex2bin($key2)] = $val2;
+                        }
+                    } else {
+                        $dataLogin[hex2bin($key)] = $val;
+                    }
+                }
+            }
+        }
 
 
 
+        dd($dataLogin);
 
-        // // login
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $origin);
-        // curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        // curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-        // curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        // curl_setopt($ch, CURLOPT_REFERER, $login);
-        // $res = curl_exec($ch);
-        // dd($res);
-        // curl_close($ch);
+        //decode json
+
+
+        //Data Pengguna
+        $ch = curl_init();
+        curl_setopt_array($ch, ([
+            CURLOPT_URL => $apiusers,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_COOKIEJAR => $cookie,
+            CURLOPT_COOKIEFILE =>  $cookie
+        ]));
+        $resUsers = curl_exec($ch);
+        curl_close($ch);
+
+        $dataUser = [];
+        $json = json_decode($resUsers);
+        // dd($json);
+
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'groups') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7573657273') {
+                            }
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    if (is_object($val3)) {
+                                        foreach ($val3 as $key4 => $val4) {
+                                            $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)] = $val4;
+                                        }
+                                    }
+                                }
+                            } else {
+                                $dataUser[hex2bin($key)][hex2bin($key2)] = $val2;
+                            }
+                        }
+                    } else {
+                        $dataUser[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataUser[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // dd($dataUser);
+
+
+        //DEPOSIT
+        $ch = curl_init();
+        curl_setopt_array($ch, ([
+            CURLOPT_URL => $apideposit,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_COOKIEJAR => $cookie,
+            CURLOPT_COOKIEFILE =>  $cookie
+        ]));
+        $resDeposit = curl_exec($ch);
+        curl_close($ch);
+        // echo $resDeposit;
+        $json = json_decode($resDeposit);
+
+        $dataDeposit = [];
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'user_group' && hex2bin($key) !== 'banks_name' && hex2bin($key) !== 'admins') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7472616e73616374696f6e73') {
+                                $dataDeposit[hex2bin($key)][hex2bin($key2)] = $val2;
+                                // $transactions[hex2bin($key2)] = $val2;
+                            } elseif ($key === '7365727669636573') {
+                                if (is_object($val2)) {
+                                    foreach ($val2 as $key3 => $val3) {
+                                        $dataDeposit[hex2bin($key)][hex2bin($key2)][hex2bin($key3)] = $val3;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $dataDeposit[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataDeposit[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // dd($dataDeposit);
+
+        //withdraw
+        $ch = curl_init();
+        curl_setopt_array($ch, ([
+            CURLOPT_URL => $apiwithdraw,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_COOKIEJAR => $cookie,
+            CURLOPT_COOKIEFILE =>  $cookie
+        ]));
+        $resWithdraw = curl_exec($ch);
+        curl_close($ch);
+
+        $json = json_decode($resWithdraw);
+        // dd($json);
+
+        $dataWithdraw = [];
+        foreach ($json as $key => $val) {
+            if (is_object($json)) {
+                if (hex2bin($key) !== 'user_group' && hex2bin($key) !== 'admins') {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if ($key === '7472616e73616374696f6e73') {
+                                $dataWithdraw[hex2bin($key)][hex2bin($key2)] = $val2;
+                            } elseif ($key === '7365727669636573') {
+                                if (is_object($val2)) {
+                                    foreach ($val2 as $key3 => $val3) {
+                                        $dataWithdraw[hex2bin($key)][hex2bin($key2)][hex2bin($key3)] = $val3;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $dataWithdraw[hex2bin($key)] = $val;
+                    }
+                } else {
+                    if (is_object($val)) {
+                        foreach ($val as $key2 => $val2) {
+                            if (is_object($val2)) {
+                                foreach ($val2 as $key3 => $val3) {
+                                    $dataWithdraw[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // dd($dataWithdraw);
     }
 }
