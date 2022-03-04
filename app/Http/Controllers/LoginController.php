@@ -111,7 +111,27 @@ class LoginController extends Controller
                                 foreach ($val2 as $key3 => $val3) {
                                     if (is_object($val3)) {
                                         foreach ($val3 as $key4 => $val4) {
-                                            $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)] = $val4;
+                                             if (is_object($val4)) {
+                        foreach ($val4 as $key5 => $val5) {
+                          // $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)] = $val5;
+                          if (is_object($val5)) {
+                            foreach ($val5 as $key6 => $val6) {
+                              // $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)] = $val6;
+                              if (is_object($val6)) {
+                                foreach ($val6 as $key7 => $val7) {
+                                  $dataUser[hex2bin($key)][hex2bin($key2)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)][hex2bin($key7)] = $val7;
+                                }
+                              } else {
+                                $dataUser[hex2bin($key)][hex2bin($key2)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)] = $val6;
+                              }
+                            }
+                          } else {
+                            $dataUser[hex2bin($key)][hex2bin($key2)][hex2bin($key4)][hex2bin($key5)] = $val5;
+                          }
+                        }
+                      } else {
+                        $dataUser[hex2bin($key)][hex2bin($key2)][hex2bin($key4)] = $val4;
+                      }
                                         }
                                     }
                                 }
