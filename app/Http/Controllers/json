@@ -75,7 +75,7 @@ class LoginController extends Controller
 
 
 
-    // dd($dataLogin);
+    dd($dataLogin);
 
     //decode json
 
@@ -105,8 +105,8 @@ class LoginController extends Controller
         if (hex2bin($key) !== 'groups') {
           if (is_object($val)) {
             foreach ($val as $key2 => $val2) {
-              // if ($key === '7573657273') {
-              // }
+              if ($key === '7573657273') {
+              }
               if (is_object($val2)) {
                 foreach ($val2 as $key3 => $val3) {
                   if (is_object($val3)) {
@@ -119,70 +119,45 @@ class LoginController extends Controller
                               // $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)] = $val6;
                               if (is_object($val6)) {
                                 foreach ($val6 as $key7 => $val7) {
-                                  $dataUser[($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)][hex2bin($key7)] = $val7;
+                                  $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)][hex2bin($key7)] = $val7;
                                 }
                               } else {
-                                $dataUser[($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)] = $val6;
+                                $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)] = $val6;
                               }
                             }
                           } else {
-                            $dataUser[($key3)][hex2bin($key4)][hex2bin($key5)] = $val5;
+                            $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)] = $val5;
                           }
                         }
                       } else {
-                        $dataUser[($key3)][hex2bin($key4)] = $val4;
+                        $dataUser[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)] = $val4;
                       }
                     }
-                    // } else {
-                    //   $dataUser[($key3)] = $val3;
                   }
                 }
+              } else {
+                $dataUser[hex2bin($key)][hex2bin($key2)] = $val2;
               }
-              //   else {
-              //     $dataUser[hex2bin($key)][hex2bin($key2)] = $val2;
-              //   }
+            }
+          } else {
+            $dataUser[hex2bin($key)] = $val;
+          }
+        } else {
+          if (is_object($val)) {
+            foreach ($val as $key2 => $val2) {
+              if (is_object($val2)) {
+                foreach ($val2 as $key3 => $val3) {
+                  $dataUser[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
+                }
+              }
             }
           }
-          // else {
-          //   $dataUser[hex2bin($key)] = $val;
-          // }
-          // } else {
-          //   if (is_object($val)) {
-          //     foreach ($val as $key2 => $val2) {
-          //       if (is_object($val2)) {
-          //         foreach ($val2 as $key3 => $val3) {
-          //           $dataUser[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
-          //         }
-          //       }
-          //     }
-          //   }
         }
       }
     }
 
-    for($i = 0 ; $i < count($dataUser); $i++) {
-    }
-    dd($dataUser);
-    // foreach ($dataUser as $user) {
-    //   dd($user['user_id']);
-    // $users = ([
-    //   'recid' => $user['user_id'],
-    //   'name' => $user['name'],
-    //   'username' => $user['username'],
-    //   'email' => $user['email'],
-    //   'phone_number' => $user['detail']['phone'],
-    //   'referral_code' => $user['referral_code'],
-    //   'playing_poker' => $user['playing_poker'],
-    //   'poker_username' => $user['poker_username'],
-    //   'registration_ip' => $user['detail']['registration_ip'],
-    //   'member_bank' => ([
-    //     'id_bank' => $user['detail']['bank']['id'],
-    //     'bank_name' => $user['detail']['bank']['name'],
-    //     'account_number' => $user['detail']['account_number'],
-    //   ])
-    // ]);
-    // }
-    // dd($users);
+    // dd($dataUser);
+
 
     //DEPOSIT
     $ch = curl_init();
@@ -209,8 +184,40 @@ class LoginController extends Controller
           if (is_object($val)) {
             foreach ($val as $key2 => $val2) {
               if ($key === '7472616e73616374696f6e73') {
-                $dataDeposit[hex2bin($key)][hex2bin($key2)] = $val2;
-                // $transactions[hex2bin($key2)] = $val2;
+                // $dataDeposit[hex2bin($key)][hex2bin($key2)] = $val2;
+                if (is_object($val2)) {
+                  foreach ($val2 as $key3 => $val3) {
+                    // $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)] = $val3;
+                    if (is_object($val3)) {
+                      foreach ($val3 as $key4 => $val4) {
+                        // $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)] = $val4;
+                        if (is_object($val4)) {
+                          foreach ($val4 as $key5 => $val5) {
+                            // $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)] = $val5;
+                            if (is_object($val5)) {
+                              foreach ($val5 as $key6 => $val6) {
+                                // $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)]  = $val6;
+                                if (is_object($val6)) {
+                                  foreach ($val6 as $key7 => $val7) {
+                                    $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)][hex2bin($key7)] = $val7;
+                                  }
+                                } else {
+                                  $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)][hex2bin($key6)]  = $val6;
+                                }
+                              }
+                            } else {
+                              $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)][hex2bin($key5)] = $val5;
+                            }
+                          }
+                        } else {
+                          $dataDeposit[hex2bin($key)][hex2bin($key2)][($key3)][hex2bin($key4)] = $val4;
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  $dataDeposit[hex2bin($key)][hex2bin($key2)] = $val2;
+                }
               } elseif ($key === '7365727669636573') {
                 if (is_object($val2)) {
                   foreach ($val2 as $key3 => $val3) {
@@ -241,7 +248,7 @@ class LoginController extends Controller
         }
       }
     }
-    // dd($dataDeposit);
+    dd($dataDeposit);
 
     //withdraw
     $ch = curl_init();
@@ -286,13 +293,7 @@ class LoginController extends Controller
             foreach ($val as $key2 => $val2) {
               if (is_object($val2)) {
                 foreach ($val2 as $key3 => $val3) {
-                  if (is_object($val3)) {
-                    foreach ($val3 as $key4 => $val4) {
-                      $dataDeposit[hex2bin($key)][($key2)][hex2bin($key3)][hex2bin($key)] = $val4;
-                    }
-                  } else {
-                    $dataDeposit[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
-                  }
+                  $dataWithdraw[hex2bin($key)][($key2)][hex2bin($key3)] = $val3;
                 }
               }
             }
@@ -302,18 +303,5 @@ class LoginController extends Controller
     }
 
     // dd($dataWithdraw);
-
-
-    $transactions = [];
-    array_push($transactions, $dataDeposit, $dataWithdraw);
-
-    dd($transactions);
-
-    foreach ($transactions as $req) {
-      $dataTransactions = ([
-        'deposit' => ([]),
-        'withdraw' => ([])
-      ]);
-    }
   }
 }
